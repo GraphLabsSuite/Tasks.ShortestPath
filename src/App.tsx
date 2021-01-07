@@ -81,7 +81,8 @@ class App extends Template{
   ]*/
 
   //graph: IGraph< IVertex, IEdge> = this.graphMy(this.data[0].value);
-  graph: IGraph< IVertex, IEdge> = this.get_graph();
+  //graph: IGraph< IVertex, IEdge> = this.get_graph();
+  graph: IGraph< IVertex, IEdge> = this.my_graph();
   private inAnswer?: string;
   private tempAnswer?: string;
 
@@ -142,6 +143,32 @@ class App extends Template{
     let result: IGraph<IVertex, IEdge> = this.graphManager(data[0].value);
     return result;
   }
+    my_graph():IGraph<IVertex, IEdge>{
+        const data = sessionStorage.getItem('variant');
+        let graph: IGraph<IVertex, IEdge> = new Graph() as unknown as IGraph<IVertex, IEdge>;
+        let objectData;
+        try {
+            objectData = JSON.parse(data || 'null');
+        } catch (err) {
+            console.log('Error while JSON parsing');
+        }
+        if (objectData && objectData.data[0] && objectData.data[0].type === 'graph') {
+            graph = this.graphManager(objectData.data[0].value);
+            const vertices = objectData.data[0].value.graph.vertices;
+            const edges  = objectData.data[0].value.graph.edges;
+            vertices.forEach((v: any) => {
+                graph.addVertex(new Vertex(v));
+            });
+            edges.forEach((e: any) => {
+                if (e.name) {
+                    graph.addEdge(new Edge(graph.getVertex(e.source)[0], graph.getVertex(e.target)[0], e.name[0]));
+                } else {
+                    graph.addEdge(new Edge(graph.getVertex(e.source)[0], graph.getVertex(e.target)[0],Math.round(Math.random()*10).toString() ));
+                }
+            });
+        }
+        return graph;
+    }
 
 
   constructor(props: {}) {
@@ -214,8 +241,9 @@ class App extends Template{
 
 
   getArea(): React.SFC<{}> {
-    this.graph = this.get_graph();
-   //store.getState().graph = this.graph;
+    //this.graph = this.get_graph();
+    this.graph = this.my_graph();
+    //store.getState().graph = this.graph;
     return () => <GraphVisualizer
         graph={this.graph}
         adapterType={'readable'}
