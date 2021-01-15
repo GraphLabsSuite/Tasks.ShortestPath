@@ -88,7 +88,7 @@ class App extends Template{
 
 
 
-/* graphMy(data:any): IGraph<IVertex, IEdge> {
+ /*graphMy(data:any): IGraph<IVertex, IEdge> {
     const graph: IGraph<IVertex, IEdge> = new Graph() as unknown as IGraph<IVertex, IEdge>;
     if (data) {
       let vertices = data.vertices;
@@ -143,6 +143,7 @@ class App extends Template{
     let result: IGraph<IVertex, IEdge> = this.graphManager(data[0].value);
     return result;
   }
+
     my_graph():IGraph<IVertex, IEdge>{
         const data = sessionStorage.getItem('variant');
         let graph: IGraph<IVertex, IEdge> = new Graph() as unknown as IGraph<IVertex, IEdge>;
